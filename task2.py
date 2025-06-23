@@ -1,58 +1,25 @@
-from turtle import Screen, Turtle
+import matplotlib.pyplot as plt
+import math
 
-LENGTH = 100
-CURSOR_SIZE = 20
-
-
-def scaleLength(length):
-    return (2 * (length / 2) ** 2) ** 0.5
-
-
-def drawSquare(t, length):
-    t.shapesize(length / CURSOR_SIZE)
-    t.stamp()
-
-
-def pythTree(t, length, level):
-    if level < 1:
+def draw_pythagoras_tree(x, y, angle, length, level):
+    if level == 0:
         return
+    x2 = x + length * math.cos(angle)
+    y2 = y + length * math.sin(angle)
+    plt.plot([x, x2], [y, y2], color='brown')
+    new_length = length * math.sqrt(2) / 2
+    angle_left = angle + math.pi / 4
+    angle_right = angle - math.pi / 4
+    draw_pythagoras_tree(x2, y2, angle_left, new_length, level - 1)
+    draw_pythagoras_tree(x2, y2, angle_right, new_length, level - 1)
 
-    drawSquare(t, length)
+def main():
+    level = int(input("Введіть рівень рекурсії: "))
+    plt.figure(figsize=(10, 10))
+    draw_pythagoras_tree(0, 0, math.pi / 2, 100, level)
+    plt.axis("equal")
+    plt.axis("off")
+    plt.show()
 
-    if level < 2:
-        return
-
-    scaled_length = scaleLength(length)
-
-    t.forward(length)
-    t.left(90)
-    t.forward(length / 2)
-    t.right(45)
-
-    pythTree(t, scaled_length, level - 1)
-
-    t.right(135)
-    t.forward(length)
-    t.left(45)
-
-    pythTree(t, scaled_length, level - 1)
-
-    t.left(135)
-    t.forward(length / 2)
-    t.right(90)
-    t.backward(length)
-
-
-screen = Screen()
-screen.tracer(False)
-
-turtle = Turtle()
-turtle.hideturtle()
-turtle.setheading(90)
-turtle.shape("square")
-turtle.penup()
-
-pythTree(turtle, LENGTH, 6)
-
-screen.update()
-screen.exitonclick()
+if __name__ == "__main__":
+    main()
